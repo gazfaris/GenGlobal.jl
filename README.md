@@ -37,3 +37,78 @@ dostuff(2) == 2.0
 set_myglob1(2.0)
 dostuff(4) == 2.0
 ```
+
+# Example 2
+
+Using `@GenGlobal` is one way to declare pre-allocated tmpvars for parallel
+computations. Just make sure to annotate the type of the variables so that the compiler
+knows what types are being used
+
+```julia
+module testModule
+
+using GenGlobal
+using StatsFuns
+
+@GenGlobal globalx
+
+export pplus, globf
+
+pplus(x...) = broadcast(+, x...)
+
+function globf(i::Int, s::T) where {T}
+    y = logsumexp(globalx::Vector{T})
+    return (y, fill(y, 2, 2), )
+end
+
+end # module end
+```
+
+```julia
+using Base.Test
+using BenchmarkTools
+using testModule3
+
+iters = 1:1000
+
+addprocs()
+@everywhere begin
+    using testModule
+    using StatsFuns
+    rx = collect(1.:1000.)
+    rxmyid = rx * myid()
+
+    # to show that each worker has different variables...
+    set_globalx(myid() * collect(1.:1000.))
+
+    function fmyid(i::Int)
+        y = logsumexp(rxmyid)
+        return (y, fill(y, 2, 2), )
+    end
+end
+
+
+# ---------- check on what gets computed ---------
+
+plsemyid = @parallel (pplus) for i=iters
+    fmyid(i)
+end
+
+gplse = @parallel (pplus) for i=iters
+    globf(i, zero(Float64))
+end
+
+@show @benchmark mapreduce(fmyid, pplus, iters)
+
+@show @benchmark begin
+    @parallel (pplus) for i=iters
+        f(i)
+    end
+end
+
+@show @benchmark begin
+    @parallel (pplus) for i=iters
+        globf(i, zero(Float64))
+    end
+end
+```

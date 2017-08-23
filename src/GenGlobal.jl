@@ -36,17 +36,19 @@ macro GenGlobal(globalnames::Symbol...)
     #       calling scope, which will probably give an error (or worse, will be totally wrong
     #       and reference the wrong thing)
     blk = quote
-        export $(esc(setname)), $(esc(getname))
-
+        # declare variable to be global w/in module
         global $(esc(varname))
 
+        # export set_ and get_
+        export $(esc(setname)), $(esc(getname))
+
+        # set
         function $(esc(setname))(x::T) where {T}
             global $(esc(varname))
             $(esc(varname)) = x::T
         end
-    end
 
-    blk2 = quote
+        # get
         function $(esc(getname))()
             return $(esc(varname))
         end
@@ -56,7 +58,7 @@ macro GenGlobal(globalnames::Symbol...)
     # the "args" of the blk expression are the export and method definition... we can
     # just append the vector to the end of the "e" args
     append!(e.args, blk.args)
-    append!(e.args, blk2.args)
+    # append!(e.args, blk2.args)
   end
 
   # macros return expression objects that get evaluated in the caller's scope
