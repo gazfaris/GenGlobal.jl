@@ -6,6 +6,13 @@
 
 [![codecov.io](http://codecov.io/github/magerton/GenGlobal.jl/coverage.svg?branch=master)](http://codecov.io/github/magerton/GenGlobal.jl?branch=master)
 
+# Installing
+
+Clone by running the following, and then package can be imported as usual.
+```julia
+Pkg.clone("https://github.com/magerton/GenGlobal.jl.git", "GenGlobal")
+```
+
 # Explanation
 
 `@GenGlobal` declares expression to be a global variable and generates exported functions
