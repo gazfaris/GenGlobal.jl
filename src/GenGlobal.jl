@@ -66,4 +66,6 @@ macro GenGlobal(globalnames::Symbol...)
 end
 
 
+include(joinpath("testFunctions", "testModule.jl"))
+
 end # module
