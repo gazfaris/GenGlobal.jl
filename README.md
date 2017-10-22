@@ -16,7 +16,7 @@ Pkg.clone("https://github.com/magerton/GenGlobal.jl.git", "GenGlobal")
 # Explanation
 
 `@GenGlobal` declares expression to be a global variable and generates exported functions
-`set_` and `get_` that set the global. Should be used in a module declaration.
+`set_` and `get_` that set the global. Should be used in a module declaration. Thanks to @npfrazier for suggesting how to use global variables in parallel computations.
 
 # Example
 
