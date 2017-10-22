@@ -20,7 +20,7 @@ Pkg.clone("https://github.com/magerton/GenGlobal.jl.git", "GenGlobal")
 
 # Example
 
-See [example/example.jl](example/example.jl) for how to use `GenGlobal` to (1) update a shared array, (2) compute things based on the values in the Shared Array, and (3) return all the computations. This is useful in problems like dynamic discrete choice models where the inner NFXP loop computes the Emax function / integrated value function in parallel, and the outer loop returns the log-likelihood and its gradient (for which we need the `pplus` and `remote_mapreduce` functions).
+See [example/example.jl](example/example.jl) and [src/TestFunctions/testModule.jl](src/TestFunctions/testModule.jl) for how to use `GenGlobal` to (1) update a shared array, (2) compute things based on the values in the Shared Array, and (3) return all the computations. This is useful in problems like dynamic discrete choice models where the inner NFXP loop computes the Emax function / integrated value function in parallel, and the outer loop returns the log-likelihood and its gradient (for which we need the `pplus` and `remote_mapreduce` functions).
 
 
 ## Other examples
