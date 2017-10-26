@@ -66,6 +66,6 @@ macro GenGlobal(globalnames::Symbol...)
 end
 
 
-include(joinpath("testFunctions", "testModule.jl"))
+include(joinpath(Pkg.dir("GenGlobal"),"src","testFunctions", "testModule.jl"))
 
 end # module
