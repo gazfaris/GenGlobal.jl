@@ -16,20 +16,17 @@ remote_mapreduce(pids::AbstractVector{<:Integer}, f::Function, R::Function) = ma
 remote_mapreduce(f::Function, R::Function) = remote_mapreduce(workers(), f, R)
 
 
-function globf(i::Int, s::T) where {T}
-    y = logsumexp(globalx::Vector{T})
-    return (y, fill(y, 2, 2), )
-end
-
 "set sa[i,j] = i ∀ i,j"
+# This is the inner function
 function update_shared!(sa::SharedArray{T,2}, j::Integer) where {T}
     j ∈ 1:size(sa,2) || throw(DomainError())
-    sa_vw = @view(sa[:,j])
+    @views sa_vw = sa[:,j]
     for i in eachindex(sa_vw)
         sa_vw[i] = i
     end
 end
 
+# This is the "outer-wrapper" for above & ensures type-stability
 function update_shared!(j::Integer)
     global g_sa
     update_shared!(g_sa, j)
@@ -37,7 +34,7 @@ end
 
 "return `logsumexp(sa[:,j])` and `myid()`... as well as adding these to `ysame2` and `ydiff2`"
 function compute_shared(sa::SharedArray{T,2}, j::Integer, ysame2::Matrix{T}, ydiff2::Matrix{T}) where {T}
-    sa_vw = @view(sa[:,j])
+    @views sa_vw = sa[:,j]
     ysame = logsumexp(sa_vw)
     ydiff = myid()
     ysame2 .+= ysame
@@ -53,6 +50,7 @@ function compute_shared(j::Integer)
 end
 
 "return global y2s as tuple from a worker"
+# could also be done as get_y2() = (get_g_ysame2(), get_g_ydiff2(), )
 function get_y2()
     global g_ysame2
     global g_ydiff2

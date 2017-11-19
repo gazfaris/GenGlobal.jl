@@ -1,12 +1,13 @@
 module GenGlobal
 
+
 export @GenGlobal
 
 """
     @GenGlobal
 
-Declare expression to be a global variable, export it, and generate an exported function
-`set_` that sets the global.
+Declare expression `VARNAME` to be a global variable, export it, and generate an exported functions
+`set_VARNAME()` that sets the global and `get_VARNAME()` that gets the variable
 
 # Example
 ```julia-repl
@@ -65,7 +66,7 @@ macro GenGlobal(globalnames::Symbol...)
   e
 end
 
-
+include(joinpath("TestFunctions","testModule.jl"))
 # include(joinpath(Pkg.dir("GenGlobal"),"src","testFunctions", "testModule.jl"))
 
 end # module
