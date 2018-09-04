@@ -2,6 +2,7 @@ module testModule
 
 using GenGlobal
 using StatsFuns
+using SharedArrays
 
 @GenGlobal globalx g_ysame2 g_ydiff2 g_sa
 
