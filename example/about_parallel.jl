@@ -73,14 +73,14 @@ rmprocs(workers())
 # ------------------------------------------------
 
 #=
-2 main options: pmap and @parallel
+2 main options: pmap and @distributed
 
 - pmap([::AbstractWorkerPool], f, c...)
     + like a parallel map function that returns a Vector{Any}
     + If needing to move data, make sure to use a CachingPool(), not a WorkerPool()
     + Allocates tasks 1 at a time to different workers.
     + Better if tasks take different amounts of time
-- @parallel
+- @distributed
     + can be put in front of a loop to make it run over all available workers
     + Usually want to prefix w/ @sync if not a reduction... otherwise code won't wait on workers
     + can also be made into a reduction
@@ -91,7 +91,7 @@ rmprocs(workers())
 
 # Example 1: Simulating Heads or Tails with parallel reduction
 tic()
-nheads = @sync @parallel (+) for i=1:8
+nheads = @sync @distributed (+) for i=1:8
   sleep(1)
   println(i)
   Int(rand(Bool))
@@ -102,7 +102,7 @@ toc()
 addprocs()
 
 tic()
-nheads = @sync @parallel (+) for i=1:8
+nheads = @sync @distributed (+) for i=1:8
   sleep(1)
   println(i)
   Int(rand(Bool))
@@ -120,7 +120,7 @@ sleep(1)
 
 tic()
 srand(1234)
-out = @sync @parallel (+) for i = 1:NITER
+out = @sync @distributed (+) for i = 1:NITER
   f(i)
 end
 println(out / NITER)
@@ -132,7 +132,7 @@ addprocs()
 
 tic()
 srand(1234)
-inside = @sync @parallel (+) for i = 1:NITER
+inside = @sync @distributed (+) for i = 1:NITER
   g(i)
 end
 println(inside / NITER)
@@ -155,7 +155,7 @@ toc()
 rmprocs(workers())
 addprocs()
 a = zeros(Int, 10)
-s = @sync @parallel for i in eachindex(a)
+s = @sync @distributed for i in eachindex(a)
   a[i] = myid()
   println(i)
 end
@@ -165,7 +165,7 @@ end
 # SharedArray(T::Type, dims::NTuple; init=false, pids=Int[])=
 b = SharedArray(Int, 10)
 fill!(b, 0)
-s = @sync @parallel for i in eachindex(b)
+s = @sync @distributed for i in eachindex(b)
   b[i] = myid()
   println(i)
 end

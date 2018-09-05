@@ -63,7 +63,7 @@ end
 
 # Update large shared array slice by slice
 # sa[i,j] = i
-s = @sync @parallel for j in 1:ncols
+s = @sync @distributed for j in 1:ncols
     update_shared!(j)  # sets      g_sa[:,j] = 1:end
 end
 @show fetch.(s)
@@ -71,7 +71,7 @@ end
 
 # Compute things based on the shared array
 # For example, can compute likelihood this way, and possibly gradient
-s = @sync @parallel (pplus) for j in 1:ncols
+s = @sync @distributed (pplus) for j in 1:ncols
     compute_shared(j)  # for each j, compute logsumexp(g_sa[:,j]) and add to ysame2. Add myid() to ydiff2
 end
 @show s
