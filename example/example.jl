@@ -1,3 +1,5 @@
+using Distributed
+using SharedArrays
 using GenGlobal
 using GenGlobal.testModule
 
@@ -66,7 +68,7 @@ end
 s = @sync @distributed for j in 1:ncols
     update_shared!(j)  # sets      g_sa[:,j] = 1:end
 end
-@show fetch.(s)
+@show fetch(s)
 @show bigsa
 
 # Compute things based on the shared array
@@ -80,11 +82,5 @@ end
 @everywhere @show get_y2()
 
 # add them up!
-# Example: have each worker compute part of likelihood + gradient, then add up partial gradients on each worker 
+# Example: have each worker compute part of likelihood + gradient, then add up partial gradients on each worker
 remote_mapreduce(get_y2, pplus)
-
-
-
-
-
-#
