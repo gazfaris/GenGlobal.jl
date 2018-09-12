@@ -17,7 +17,7 @@ Declare expression `VARNAME` to be a global variable, export it, and generate an
 #errors out myglob2
 
 set_myglob1(1.0)
-set_myglob2(eye(3))
+set_myglob2(Matrix(1.0I,3,3))
 
 myglob1
 myglob2
