@@ -1,0 +1,9 @@
+name = "GenGlobal"
+uuid = "e61441de-b3fa-5384-98e4-d7fd5b91285f"
+
+[deps]
+SharedArrays = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
+StatsFuns = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
+
+[compat]
+julia = "≥ 0.6.0"
