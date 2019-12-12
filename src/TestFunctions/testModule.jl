@@ -1,12 +1,14 @@
 module testModule
 
+using Distributed
 using GenGlobal
 using StatsFuns
 using SharedArrays
 
 @GenGlobal globalx g_ysame2 g_ydiff2 g_sa
+@GenGlobal myglobalx
 
-export pplus, globf, update_shared!, compute_shared, remote_mapreduce, get_y2
+export pplus, globf, update_shared!, compute_shared, remote_mapreduce, get_y2, myglobalx
 
 pplus(x...) = broadcast(+, x...)
 
