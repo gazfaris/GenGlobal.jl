@@ -17,18 +17,18 @@ Declare expression `VARNAME` to be a global variable, export it, and generate an
 #errors out myglob2
 
 set_myglob1(1.0)
-set_myglob2(eye(3))
+set_myglob2(Matrix(1.0I,3,3))
 
 myglob1
 myglob2
 ```
 """
-# uses https://stackoverflow.com/questions/31313040/julia-automatically-generate-functions-and-export-them
 macro GenGlobal(globalnames::Symbol...)
-  e = quote end  # start out with a blank quoted expression
-  for varname in globalnames
-    setname = Symbol("set_$(varname)")   # create your function name
-    getname = Symbol("get_$(varname)")   # create your function name
+    # uses https://stackoverflow.com/questions/31313040/julia-automatically-generate-functions-and-export-them
+    e = quote end  # start out with a blank quoted expression
+    for varname in globalnames
+        setname = Symbol("set_$(varname)")   # create your function name
+        getname = Symbol("get_$(varname)")   # create your function name
 
     # this next part creates another quoted expression, which are just the 2 statements
     # we want to add for this function... the export call and the function definition

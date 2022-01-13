@@ -1,3 +1,5 @@
+using Distributed
+using SharedArrays
 using GenGlobal
 using GenGlobal.testModule
 
@@ -63,15 +65,15 @@ end
 
 # Update large shared array slice by slice
 # sa[i,j] = i
-s = @sync @parallel for j in 1:ncols
+s = @sync @distributed for j in 1:ncols
     update_shared!(j)  # sets      g_sa[:,j] = 1:end
 end
-@show fetch.(s)
+@show fetch(s)
 @show bigsa
 
 # Compute things based on the shared array
 # For example, can compute likelihood this way, and possibly gradient
-s = @sync @parallel (pplus) for j in 1:ncols
+s = @sync @distributed (pplus) for j in 1:ncols
     compute_shared(j)  # for each j, compute logsumexp(g_sa[:,j]) and add to ysame2. Add myid() to ydiff2
 end
 @show s
@@ -80,11 +82,5 @@ end
 @everywhere @show get_y2()
 
 # add them up!
-# Example: have each worker compute part of likelihood + gradient, then add up partial gradients on each worker 
+# Example: have each worker compute part of likelihood + gradient, then add up partial gradients on each worker
 remote_mapreduce(get_y2, pplus)
-
-
-
-
-
-#

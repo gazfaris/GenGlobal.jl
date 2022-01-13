@@ -1,11 +1,14 @@
 module testModule
 
+using Distributed
 using GenGlobal
 using StatsFuns
+using SharedArrays
 
 @GenGlobal globalx g_ysame2 g_ydiff2 g_sa
+@GenGlobal myglobalx
 
-export pplus, globf, update_shared!, compute_shared, remote_mapreduce, get_y2
+export pplus, globf, update_shared!, compute_shared, remote_mapreduce, get_y2, myglobalx
 
 pplus(x...) = broadcast(+, x...)
 
@@ -17,8 +20,8 @@ remote_mapreduce(f::Function, R::Function) = remote_mapreduce(workers(), f, R)
 
 
 "set sa[i,j] = i ∀ i,j"
-# This is the inner function
 function update_shared!(sa::SharedArray{T,2}, j::Integer) where {T}
+    # This is the inner function
     j ∈ 1:size(sa,2) || throw(DomainError())
     @views sa_vw = sa[:,j]
     for i in eachindex(sa_vw)
@@ -50,8 +53,8 @@ function compute_shared(j::Integer)
 end
 
 "return global y2s as tuple from a worker"
-# could also be done as get_y2() = (get_g_ysame2(), get_g_ydiff2(), )
 function get_y2()
+    # could also be done as get_y2() = (get_g_ysame2(), get_g_ydiff2(), )
     global g_ysame2
     global g_ydiff2
     return (g_ysame2, g_ydiff2,)

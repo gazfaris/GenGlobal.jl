@@ -1,24 +1,26 @@
 using GenGlobal
-using Base.Test
+using Test
+using LinearAlgebra
 
-dump(@GenGlobal somevar)
+using GenGlobal.testModule: set_globalx, get_globalx
 
-module mytest
- using GenGlobal
- @GenGlobal myglobalx
+@show dump(@GenGlobal somevar)
+
+@testset "GenGlobal Tests" begin
+
+    x = 1.0
+    a = Matrix(1.0I,3,3)
+
+    set_globalx(x)
+    @test x === get_globalx()
+
+    set_globalx(a)
+    a === get_globalx()
+
+    @test get_globalx() != x
+    set_globalx(x)
+    @test get_globalx() == x
+    @test get_globalx() === x
+    @test get_globalx() != a
+
 end
-
-using mytest
-
-x = 1.0
-set_myglobalx(x)
-@test mytest.myglobalx === get_myglobalx()
-
-a = eye(3)
-set_myglobalx(a)
-a === get_myglobalx()
-
-@test mytest.myglobalx != x
-set_myglobalx(x)
-@test mytest.myglobalx == x
-@test get_myglobalx() != a
